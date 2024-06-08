@@ -1,0 +1,80 @@
+name: Workflow Mariah
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+  # Schedule the workflow to run every hour
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  build-on-push:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the project
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      # Test the project
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+      # Custom script
+      - name: Run custom script on push
+        run: |
+          echo "This is a custom script running on push event"
+          # Adicione aqui o seu script personalizado
+
+  scheduled-build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the project
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      # Test the project
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+      # Custom script
+      - name: Run custom script on schedule
+        run: |
+          echo "This is a custom script running on schedule"
+          # Adicione aqui o seu script personalizado

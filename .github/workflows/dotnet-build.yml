@@ -1,80 +1,37 @@
-name: Workflow Mariah
+name: .NET Workflow
 
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-  # Schedule the workflow to run every hour
   schedule:
-    - cron: '0 * * * *'
+    - cron: "0 * * * *"
 
 jobs:
-  build-on-push:
-    # The type of runner that the job will run on
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Setup .NET
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '3.1.201' # Adjust the version as needed
 
-      # Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # Build the project
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --no-restore
 
-      # Test the project
-      - name: Test
-        run: dotnet test --no-restore --verbosity normal
-
-      # Custom script
-      - name: Run custom script on push
+      - name: Run custom script
         run: |
-          echo "This is a custom script running on push event"
-          # Adicione aqui o seu script personalizado
+          echo "Hello, World!"
 
-  scheduled-build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Setup .NET
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: Use existing action
+        uses: actions/setup-node@v2
         with:
-          dotnet-version: '6.0.x'
-
-      # Restore dependencies
-      - name: Restore dependencies
-        run: dotnet restore
-
-      # Build the project
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
-      # Test the project
-      - name: Test
-        run: dotnet test --no-restore --verbosity normal
-
-      # Custom script
-      - name: Run custom script on schedule
-        run: |
-          echo "This is a custom script running on schedule"
-          # Adicione aqui o seu script personalizado
+          node-version: 14
